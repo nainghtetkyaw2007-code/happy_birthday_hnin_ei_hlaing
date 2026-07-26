@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🩵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 15px;
+            position: relative;
+        }
+
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .balloon-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            font-size: 2rem;
+            animation: floatUp 8s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(56, 189, 248, 0.3);
+            border-radius: 24px;
+            padding: 25px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(2, 132, 199, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        p {
+            color: #e0f2fe;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .img-box {
+            width: 100%;
+            height: 260px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input[type="text"] {
+            width: 85%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #38bdf8;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 5px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #38bdf8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            color: #0f172a;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-no {
+            background: #334155;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            min-height: 60px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #38bdf8;
+            transition: 0.4s;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            border: 1px solid #38bdf8;
+        }
+
+        .calendar-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #38bdf8;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .cal-header {
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .cal-day {
+            padding: 6px;
+            border-radius: 50%;
+        }
+        .cal-day.target {
+            background: #ff007f;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px #ff007f;
+            position: relative;
+        }
+        .cal-day.target::after {
+            content: '💖';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fireworksCanvas"></canvas>
+    <div class="balloon-container" id="balloonContainer"></div>
+
+    <div class="container">
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- STEP 0: PASSWORD LOCK -->
+        <div class="step active" id="step-0">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🔒</div>
+            <h1>Secret Verification</h1>
+            <p style="text-align: center;">ဒီ Surprise လေးကို ကြည့်ဖို့အတွက် တို့တွေရဲ့ <strong>Friendship Day</strong> ကို ရိုက်ထည့်ပေးပါနော်!</p>
+            <input type="text" id="passwordInput">
+            <p id="passErrorMsg" style="color: #ef4444; font-size: 0.85rem; display: none; text-align: center; margin-bottom: 15px;">Password မှားနေပါတယ်! ပြန်စဉ်းစားကြည့်ပါဦး 😜</p>
+            <br>
+            <button class="btn" onclick="checkPassword()">Unlock လုပ်မည် 🔑</button>
+        </div>
+
+        <!-- STEP 1: QUESTION 1 -->
+        <div class="step" id="step-1">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🤪</div>
+            <h1>မေးခွန်း (၁)</h1>
+            <p style="text-align: center;">သင့်သူငယ်ချင်း အရပ်ရှည်ရှည် အသားညိုညိုနဲ့ နိုင်ထက်ကျော်က ရုပ်ချော သဘောကောင်းဆိုတာ လက်ခံပါသလား?</p>
+            <p id="q1Alert" style="color: #fbbf24; font-size: 0.85rem; min-height: 25px; text-align: center; margin-bottom: 10px;"></p>
+            <div class="btn-container">
+                <button class="btn" onclick="q1Answer(true)">လက်ခံပါတယ် 👍</button>
+                <button class="btn btn-no" onclick="q1Answer(false)">လက်မခံပါ 👎</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: QUESTION 2 -->
+        <div class="step" id="step-2">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🎁</div>
+            <h1>မေးခွန်း (၂)</h1>
+            <p style="text-align: center;">သင်သည် အခုမွေးနေ့မှာ ဒီလို လက်ဆောင်မျိုးကို မျှော်လင့်ထားပါသလား?</p>
+            <p id="q2Alert" style="color: #fbbf24; font-size: 0.85rem; min-height: 25px; text-align: center; margin-bottom: 10px;"></p>
+            <div class="btn-container">
+                <button class="btn" onclick="q2Answer(true)">မျှော်လင့်ထားပါတယ် ✨</button>
+                <button class="btn btn-no" onclick="q2Answer(false)">မမျှော်လင့်ထားပါ ❌</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: QUESTION 3 (NEW) -->
+        <div class="step" id="step-3">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">💻</div>
+            <h1>မေးခွန်း (၃)</h1>
+            <p style="text-align: center;">ဒီ Surprise Website လေးကို တည်ဆောက်ထားတဲ့ သူငယ်ချင်းက ဘယ်လောက်တောင် ဂရုစိုက်ပြီး ကြိုးစားထားလဲဆိုတာ လက်ခံပါသလား?</p>
+            <p id="q3Alert" style="color: #fbbf24; font-size: 0.85rem; min-height: 25px; text-align: center; margin-bottom: 10px;"></p>
+            <div class="btn-container">
+                <button class="btn" onclick="q3Answer(true)">လက်ခံပါတယ် 💯</button>
+                <button class="btn btn-no" onclick="q3Answer(false)">လက်မခံပါ 😒</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: QUESTION 4 (NEW) -->
+        <div class="step" id="step-4">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🍕</div>
+            <h1>မေးခွန်း (၄)</h1>
+            <p style="text-align: center;">မွေးနေ့ပွဲကျရင် မွေးနေ့ရှင်က မုန့်အဝကျွေးမယ်ဆိုတာ သေချာပါသလား?</p>
+            <p id="q4Alert" style="color: #fbbf24; font-size: 0.85rem; min-height: 25px; text-align: center; margin-bottom: 10px;"></p>
+            <div class="btn-container">
+                <button class="btn" onclick="q4Answer(true)">သေချာပါတယ် 🍕</button>
+                <button class="btn btn-no" onclick="q4Answer(false)">မကျွေးနိုင်ပါ 🤭</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: CALENDAR VIEW -->
+        <div class="step" id="step-5">
+            <span class="badge">Special Date 📅</span>
+            <div class="calendar-card">
+                <div class="cal-header">July 2007</div>
+                <div class="cal-grid" style="font-weight: bold; color: #94a3b8; margin-bottom: 5px;">
+                    <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                </div>
+                <div class="cal-grid">
+                    <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div>
+                    <div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div>
+                    <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div>
+                    <div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div>
+                    <div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day target">31</div><div></div><div></div><div></div><div></div>
+                </div>
+            </div>
+            <h1>အထူးခြားဆုံး နေ့ရက် ✨</h1>
+            <p style="text-align: center;">31.7.2007 ဆိုတဲ့ ဒီနေ့ရက်မှာ လောကကြီးထဲကို ရောက်ရှိလာခဲ့တဲ့ နှင်းအိလှိုင်အတွက် အမှတ်တရ မွေးနေ့လေး စတင်ပါပြီ။</p>
+            <button class="btn" onclick="nextStep(6)">ပုံများကို ကြည့်မည် 📸</button>
+        </div>
+
+        <!-- PHOTO STEPS (1 to 15) -->
+        <div class="step" id="step-6">
+            <span class="badge">Memory 01 / 15</span>
+            <div class="img-box"><img src="photo1.jpg" alt="Memory 1"></div>
+            <h1>၁၉ နှစ်ပြည့် မွေးနေ့မင်္ဂလာပါ 🩵</h1>
+            <p>အသက် ၁၉ နှစ်ပြည့်သွားတဲ့ နှင်းအိလှိုင်ရေ... ဘဝခရီးလမ်းမှာ အမြဲတမ်း ပျော်ရွှင်မှုတွေနဲ့သာ လမ်းခင်းနိုင်ပါစေလို့ ဆုတောင်းပေးပါတယ်။</p>
+            <button class="btn" onclick="nextStep(7)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-7">
+            <span class="badge">Memory 02 / 15</span>
+            <div class="img-box"><img src="photo2.jpg" alt="Memory 2"></div>
+            <h1>အပြုံးမပျက်ပါနဲ့ ✨</h1>
+            <p>မင်းရဲ့ မျက်နှာပေါ်က အပြုံးလေးတွေက ဘေးနားကလူတွေကို အမြဲတမ်း အားဖြစ်စေပါတယ်။ အဲ့ဒီအပြုံးလေးတွေ အမြဲတမ်း တောက်ပနေပါစေ။</p>
+            <button class="btn" onclick="nextStep(8)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-8">
+            <span class="badge">Memory 03 / 15</span>
+            <div class="img-box"><img src="photo3.jpg" alt="Memory 3"></div>
+            <h1>အိပ်မက်များဆီသို့ 🌟</h1>
+            <p>ကိုယ့်ရဲ့ ရည်မှန်းချက်နဲ့ အိပ်မက်တွေကို တစိုက်မတ်မတ် လျှောက်လှမ်းပြီး အောင်မြင်မှု ပန်းတိုင်ကို အရောက်လှမ်းနိုင်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(9)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-9">
+            <span class="badge">Memory 04 / 15</span>
+            <div class="img-box"><img src="photo4.jpg" alt="Memory 4"></div>
+            <h1>Friendship အမှတ်တရ 🤝</h1>
+            <p>၁၂.၅.၂၀၂၅ ကတည်းက စတင်ခဲ့တဲ့ တို့တွေရဲ့ ခင်မင်မှုက တကယ့်ကို တန်ဖိုးရှိပြီး ထာဝရ တည်တံ့နေမှာပါ။</p>
+            <button class="btn" onclick="nextStep(10)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-10">
+            <span class="badge">Memory 05 / 15</span>
+            <div class="img-box"><img src="photo5.jpg" alt="Memory 5"></div>
+            <h1>တန်ဖိုးရှိလှတဲ့ ခင်မင်မှု 🩵</h1>
+            <p>ငါတို့နှစ်ယောက် ရန်ဖြစ်လို့ သံယောဇဉ်ပြတ်မလိုတောင် ဖြစ်ခဲ့ကြသေးတယ်နော်... ဒါပေမဲ့ မင်းဘက်က အရင်စခေါ်ပေးလို့ ပြန်အဆင်ပြေသွားခဲ့တာ။ အဲ့ဒီအတွက် အများကြီး ကျေးဇူးတင်သလို အရမ်းလည်း တန်ဖိုးထားပါတယ်!</p>
+            <button class="btn" onclick="nextStep(11)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-11">
+            <span class="badge">Memory 06 / 15</span>
+            <div class="img-box"><img src="photo6.jpg" alt="Memory 6"></div>
+            <h1>ခွန်အားတွေနဲ့ ရှေ့ဆက် 💫</h1>
+            <p>အခက်အခဲ ဘယ်လောက်ပဲရှိရှိ ကြံ့ကြံ့ခံပြီး ကျော်ဖြတ်နိုင်တဲ့ သတ္တိတွေ မင်းမှာ အပြည့်အဝ ရှိပါတယ်။</p>
+            <button class="btn" onclick="nextStep(12)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-12">
+            <span class="badge">Memory 07 / 15</span>
+            <div class="img-box"><img src="photo7.jpg" alt="Memory 7"></div>
+            <h1>တောက်ပတဲ့ ကြယ်တစ်ပွင့် 🎈</h1>
+            <p>ဘယ်နေရာရောက်ရောက် ကိုယ့်အရည်အချင်းနဲ့ကိုယ် ထင်းလင်းပေါ်လွင်နေတဲ့ ကြယ်လေးတစ်ပွင့် ဖြစ်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(13)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-13">
+            <span class="badge">Memory 08 / 15</span>
+            <div class="img-box"><img src="photo8.jpg" alt="Memory 8"></div>
+            <h1>အေးချမ်းသည့်ဘဝ 🤍</h1>
+            <p>စိတ်ရှုပ်စရာတွေကင်းဝေးပြီး စိတ်အေးချမ်းသာနဲ့ ဘဝကို လှပစွာ ဖြတ်သန်းနိုင်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(14)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-14">
+            <span class="badge">Memory 09 / 15</span>
+            <div class="img-box"><img src="photo9.jpg" alt="Memory 9"></div>
+            <h1>ရယ်မောခြင်းများစွာ 🌸</h1>
+            <p>မျက်ရည်ကျစရာတွေထက် ရယ်မောပျော်ရွှင်ရမယ့် အချိန်တွေကသာ မင်းရဲ့ဘဝမှာ ပိုများပါစေ။</p>
+            <button class="btn" onclick="nextStep(15)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-15">
+            <span class="badge">Memory 10 / 15</span>
+            <div class="img-box"><img src="photo10.jpg" alt="Memory 10"></div>
+            <h1>ကိုယ်ချင်းစာတရား 🍀</h1>
+            <p>စိတ်ထားဖြူစင်ပြီး သူတစ်ပါးအပေါ် ကူညီတတ်တဲ့ မင်းရဲ့ စိတ်ရင်းလေးကို အမြဲတမ်း ထိန်းသိမ်းထားပါ။</p>
+            <button class="btn" onclick="nextStep(16)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-16">
+            <span class="badge">Memory 11 / 15</span>
+            <div class="img-box"><img src="photo11.jpg" alt="Memory 11"></div>
+            <h1>ကျန်းမာရွှင်လန်းပါစေ 🌿</h1>
+            <p>စိတ်ရော ကိုယ်ပါ ကျန်းမာပြီး နေ့ရက်တိုင်းမှာ လန်းဆန်းတက်ကြွစွာနဲ့ လိုရာခရီးကို လျှောက်လှမ်းနိုင်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(17)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-17">
+            <span class="badge">Memory 12 / 15</span>
+            <div class="img-box"><img src="photo12.jpg" alt="Memory 12"></div>
+            <h1>နားလည်မှုများစွာဖြင့် 🤍</h1>
+            <p>အမြဲတမ်း နားလည်ပေးနိုင်တဲ့ သူငယ်ချင်းကောင်းတစ်ယောက် ဖြစ်ပေးခဲ့လို့လည်း ကျေးဇူးအများကြီး တင်ပါတယ်နော်။</p>
+            <button class="btn" onclick="nextStep(18)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-18">
+            <span class="badge">Memory 13 / 15</span>
+            <div class="img-box"><img src="photo13.jpg" alt="Memory 13"></div>
+            <h1>အမြဲတမ်း အောင်မြင်ပါစေ 🏆</h1>
+            <p>လုပ်ကိုင်သမျှ စီးပွားရေးနဲ့ ပညာရေး၊ ဘဝရဲ့ ကဏ္ဍတိုင်းမှာ ထိပ်ဆုံးက အောင်မြင်သူဖြစ်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(19)">ဆက်ကြည့်မယ် ➡️</button>
+        </div>
+
+        <div class="step" id="step-19">
+            <span class="badge">Memory 14 / 15</span>
+            <div class="img-box"><img src="photo14.jpg" alt="Memory 14"></div>
+            <h1>ချစ်ခြင်းများစွာဖြင့် 🎁</h1>
+            <p>ဘေးနားမှာ ချစ်တဲ့သူတွေ၊ ကူညီပေးမယ့်သူတွေနဲ့ပဲ အမြဲတမ်း ဝန်းရံနေပါစေလို့ ဆုတောင်းပေးပါတယ်။</p>
+            <button class="btn" onclick="nextStep(20)">နောက်ဆုံးပုံ ကြည့်မည် ➡️</button>
+        </div>
+
+        <div class="step" id="step-20">
+            <span class="badge">Memory 15 / 15</span>
+            <div class="img-box"><img src="photo15.jpg" alt="Memory 15"></div>
+            <h1>ထာဝရ ပျော်ရွှင်ပါစေ ✨</h1>
+            <p>၁၅ ပုံမြောက် အမှတ်တရ ပုံလေးနဲ့အတူ မင်းရဲ့ ဘဝတစ်လျှောက်လုံး အလှပဆုံး အချိန်တွေပဲ ပိုင်ဆိုင်နိုင်ပါစေ။</p>
+            <button class="btn" onclick="nextStep(21)">မွေးနေ့ဆုတောင်း ဖတ်မည် 🎁</button>
+        </div>
+
+        <!-- STEP 21: FINAL GALLERY (15 Photos) + LONG WISH -->
+        <div class="step" id="step-21">
+            <span class="badge">All 15 Memories Collection 📸</span>
+            
+            <div class="gallery-grid">
+                <img src="photo1.jpg" alt="1">
+                <img src="photo2.jpg" alt="2">
+                <img src="photo3.jpg" alt="3">
+                <img src="photo4.jpg" alt="4">
+                <img src="photo5.jpg" alt="5">
+                <img src="photo6.jpg" alt="6">
+                <img src="photo7.jpg" alt="7">
+                <img src="photo8.jpg" alt="8">
+                <img src="photo9.jpg" alt="9">
+                <img src="photo10.jpg" alt="10">
+                <img src="photo11.jpg" alt="11">
+                <img src="photo12.jpg" alt="12">
+                <img src="photo13.jpg" alt="13">
+                <img src="photo14.jpg" alt="14">
+                <img src="photo15.jpg" alt="15">
+            </div>
+
+            <h1>🎉 HAPPY 19th BIRTHDAY! 🎉</h1>
+            <p style="font-weight: bold; color: #38bdf8; text-align: center; margin-bottom: 10px;">
+                " နှင်းအိလှိုင် " 🩵
+            </p>
+            <p>
+                အသက် ၁၉ နှစ်ပြည့်သွားတဲ့ အမှတ်တရ မွေးနေ့လေးမှာ စိတ်၏ချမ်းသာခြင်း၊ ကိုယ်၏ကျန်းမာခြင်းတို့နဲ့ ပြည့်စုံပြီး လိုအင်ဆန္ဒမှန်သမျှ အကုန်ပြည့်ဝပါစေလို့ ဆုတောင်းပေးပါတယ်။ 
+                <br><br>
+                31.7.2007 မှာ မွေးဖွားခဲ့တဲ့ မင်းလေးဟာ ငါတို့အတွက်တော့ အမြဲတမ်း ခင်ဖို့ကောင်းပြီး တန်ဖိုးရှိတဲ့ သူငယ်ချင်းတစ်ယောက်ပါ။ ၁၂.၅.၂၀၂၅ ကတည်းက စတင်ခဲ့တဲ့ တို့တွေရဲ့ ခင်မင်မှုလေးမှာ ရန်ဖြစ်လို့ သံယောဇဉ်ပြတ်မလိုတောင် ဖြစ်ခဲ့ကြပေမဲ့ မင်းဘက်က အရင်စခေါ်ပေးလို့ အရာရာ ပြန်အဆင်ပြေသွားခဲ့တဲ့ အမှတ်တရလေးကိုလည်း အမြဲတမ်း တန်ဖိုးထားသတိရနေမှာပါ။
+                <br><br>
+                ရှေ့ဆက်ရမယ့် ဘဝခရီးလမ်းမှာလည်း အခက်အခဲမှန်သမျှကို ရဲရဲဝံ့ဝံ့ ကျော်ဖြတ်နိုင်ပြီး ကိုယ်မှန်းမျှော်ထားတဲ့ အိပ်မက်တွေ၊ အောင်မြင်မှုတွေကို အရယူနိုင်ပါစေ။ မျက်နှာပေါ်မှာလည်း အပြုံးလေးတွေ အမြဲတမ်း ပိုင်ဆိုင်နိုင်ပါစေ။
+                <br><br>
+                <span style="color: #38bdf8; font-weight: bold; display: block; text-align: center; margin-top: 10px;">
+                    ထာဝရ ပျော်ရွှင်ပါစေ သူငယ်ချင်းလေး... 🎁🩵
+                </span>
+            </p>
+            <button class="btn" onclick="launchFireworks()">🎂 မီးပန်း ပစ်ဖောက်မည် 🎂</button>
+        </div>
+
+    </div>
+
+    <script>
+        const totalSteps = 22;
+
+        function createBalloons() {
+            const container = document.getElementById('balloonContainer');
+            const balloonEmojis = ['🎈', '🩵', '💙', '☁️', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                balloon.innerText = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+                balloon.style.left = Math.random() * 100 + 'vw';
+                balloon.style.animationDuration = (Math.random() * 5 + 6) + 's';
+                balloon.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(balloon);
+            }
+        }
+        createBalloons();
+
+        // Password Logic
+        function checkPassword() {
+            let rawInput = document.getElementById('passwordInput').value;
+            let cleaned = rawInput.trim().replace(/\s+/g, '').replace(/\//g, '.');
+            
+            const myanmarDigits = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+            for (let i = 0; i < 10; i++) {
+                cleaned = cleaned.replace(new RegExp(myanmarDigits[i], 'g'), i);
+            }
+
+            if (cleaned === '12.5.2025' || cleaned === '12.05.2025') {
+                document.getElementById('passErrorMsg').style.display = 'none';
+                nextStep(1);
+            } else {
+                document.getElementById('passErrorMsg').style.display = 'block';
+            }
+        }
+
+        // Q1 Funny Logic
+        function q1Answer(isYes) {
+            const alertBox = document.getElementById('q1Alert');
+            if (isYes) {
+                alertBox.innerText = "";
+                nextStep(2);
+            } else {
+                alertBox.innerText = "ဟေ့လူ... လက်မခံလို့ မရဘူးလေ! အမှန်တရားကို လက်ခံလိုက်ပါတော့ 😜";
+                setTimeout(() => { alertBox.innerText = ""; }, 2500);
+            }
+        }
+
+        // Q2 Funny Logic
+        function q2Answer(isYes) {
+            const alertBox = document.getElementById('q2Alert');
+            if (isYes) {
+                alertBox.innerText = "";
+                nextStep(3);
+            } else {
+                alertBox.innerText = "မမျှော်လင့်ထားလည်း ဘာမှ မပေးတော့ဘူးလေ~ 😜 (စတာပါ ပြန်ရွေးပေးနော်!)";
+                setTimeout(() => { alertBox.innerText = ""; }, 2500);
+            }
+        }
+
+        // Q3 Funny Logic (New)
+        function q3Answer(isYes) {
+            const alertBox = document.getElementById('q3Alert');
+            if (isYes) {
+                alertBox.innerText = "";
+                nextStep(4);
+            } else {
+                alertBox.innerText = "ဟဲဟေ့... နှိပ်လို့မရဘူးလေ! စေတနာတွေကို အသိအမှတ်ပြုလိုက်ပါတော့ 😜";
+                setTimeout(() => { alertBox.innerText = ""; }, 2500);
+            }
+        }
+
+        // Q4 Funny Logic (New)
+        function q4Answer(isYes) {
+            const alertBox = document.getElementById('q4Alert');
+            if (isYes) {
+                alertBox.innerText = "";
+                nextStep(5);
+            } else {
+                alertBox.innerText = "မရဘူးနော်... မုန့်တော့ ကျွေးရမှာပဲ! မကျွေးမချင်း နောက်တစ်ဆင့် ပို့မပေးဘူး 🍕";
+                setTimeout(() => { alertBox.innerText = ""; }, 2500);
+            }
+        }
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step-' + stepNumber).classList.add('active');
+            
+            let progressPercent = ((stepNumber + 1) / totalSteps) * 100;
+            document.getElementById('progress').style.width = progressPercent + '%';
+
+            if(stepNumber === 21) {
+                launchFireworks();
+            }
+        }
+
+        // Custom Fireworks Animation
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createParticle(x, y) {
+            const colors = ['#38bdf8', '#ff007f', '#fbbf24', '#34d399', '#a855f7', '#ffffff'];
+            return {
+                x: x,
+                y: y,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                radius: Math.random() * 4 + 2,
+                vx: (Math.random() - 0.5) * 12,
+                vy: (Math.random() - 0.5) * 12,
+                alpha: 1,
+                decay: Math.random() * 0.02 + 0.015
+            };
+        }
+
+        function launchFireworks() {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * (canvas.height * 0.6);
+                    for (let p = 0; p < 70; p++) {
+                        particles.push(createParticle(x, y));
+                    }
+                }, i * 250);
+            }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+        animateFireworks();
+
+        document.getElementById('progress').style.width = (1 / totalSteps * 100) + '%';
+    </script>
+</body>
+</html>
